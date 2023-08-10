@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,7 +12,6 @@ import {
   Highlight,
   SimpleGrid,
   Link,
-  Image,
   Input,
   GridItem,
 } from "@chakra-ui/react";
@@ -44,6 +43,7 @@ const SignUp = () => {
     resolver: yupResolver(schema),
     reValidateMode: "onChange",
   });
+
   function onSubmit(values) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -97,7 +97,17 @@ const SignUp = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <GridItem colSpan={1}>
                 <FormControl isInvalid={errors["Name"]}>
-                  <FormLabel htmlFor="Name">Name</FormLabel>
+                  <FormLabel htmlFor="Name">
+                    Name{" "}
+                    <Highlight
+                      query={"*"}
+                      styles={{
+                        color: "red",
+                      }}
+                    >
+                      *
+                    </Highlight>
+                  </FormLabel>
                   <Input
                     className="custom_input"
                     id="'Name'"
@@ -111,7 +121,17 @@ const SignUp = () => {
               </GridItem>
               <GridItem colSpan={1}>
                 <FormControl isInvalid={errors?.Email}>
-                  <FormLabel htmlFor="email">Email</FormLabel>
+                  <FormLabel htmlFor="email">
+                    Email{" "}
+                    <Highlight
+                      query={"*"}
+                      styles={{
+                        color: "red",
+                      }}
+                    >
+                      *
+                    </Highlight>
+                  </FormLabel>
                   <Input
                     className="custom_input"
                     id="email"
@@ -126,10 +146,21 @@ const SignUp = () => {
               </GridItem>
               <GridItem colSpan={1}>
                 <FormControl isInvalid={errors?.Password}>
-                  <FormLabel htmlFor="Password">Password</FormLabel>
+                  <FormLabel htmlFor="Password">
+                    Password{" "}
+                    <Highlight
+                      query={"*"}
+                      styles={{
+                        color: "red",
+                      }}
+                    >
+                      *
+                    </Highlight>
+                  </FormLabel>
                   <Input
                     className="custom_input"
                     id="Password"
+                    type="password"
                     placeholder="Password"
                     {...register("Password")}
                   />
@@ -141,14 +172,24 @@ const SignUp = () => {
               <GridItem colSpan={1}>
                 <FormControl isInvalid={errors?.ConfirmPassword}>
                   <FormLabel htmlFor="ConfirmPassword">
-                    Confirm Password
+                    Confirm Password{" "}
+                    <Highlight
+                      query={"*"}
+                      styles={{
+                        color: "red",
+                      }}
+                    >
+                      *
+                    </Highlight>
                   </FormLabel>
                   <Input
                     className="custom_input"
                     id="ConfirmPassword"
+                    type="password"
                     placeholder="Confirm Password"
                     {...register("ConfirmPassword")}
                   />
+
                   <FormErrorMessage color={"red"}>
                     {errors?.ConfirmPassword && errors?.ConfirmPassword.message}
                   </FormErrorMessage>
