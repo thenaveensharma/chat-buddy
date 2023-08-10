@@ -10,23 +10,22 @@ import {
   Box,
   Text,
   Highlight,
-  Grid,
-  GridItem,
+  SimpleGrid,
   Link,
   Image,
+  Input,
+  GridItem,
 } from "@chakra-ui/react";
-import CustomInput from "../../components/CustomInput";
 
 const schema = yup
   .object()
   .shape({
-    "First Name": yup.string().required(),
-    "Last Name": yup.string().required(),
-    email: yup.string().email().required(),
-    password: yup.string().min(6).required(),
-    confirmPassword: yup
+    Name: yup.string().min(2).required(),
+    Email: yup.string().email().required(),
+    Password: yup.string().min(8).required(),
+    ConfirmPassword: yup
       .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match")
+      .oneOf([yup.ref("Password"), null], "Passwords must match")
       .required("Confirm Password is required"),
   })
   .required();
@@ -36,11 +35,15 @@ const SignUp = () => {
     formState: { errors, isSubmitting },
     register,
   } = useForm({
-    defaultValues: {},
+    defaultValues: {
+      Name: "",
+      Email: "",
+      Password: "",
+      ConfirmPassword: "",
+    },
     resolver: yupResolver(schema),
     reValidateMode: "onChange",
   });
-  console.log("🚀 ~ file: SignUp.jsx:30 ~ SignUp ~ errors:", errors);
   function onSubmit(values) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -50,160 +53,129 @@ const SignUp = () => {
     });
   }
   return (
-    // <Box display={"flex"}>
-    //   <Box
-    //     bg="black"
-    //     h={"100vh"}
-    //     display={"flex"}
-    //     flexDir={"column"}
-    //     width={"50%"}
-    //     paddingLeft={"10rem"}
-    //   >
-    //     <Text fontSize={"xl"} color={"gray.500"} marginTop={"12rem"}>
-    //       START FOR FREE
-    //     </Text>
-    //     <Text fontSize={"4em"} fontWeight={"bold"} color={"white"}>
-    //       Create new account
-    //       <Highlight
-    //         query={"."}
-    //         styles={{
-    //           color: "blue",
-    //         }}
-    //       >
-    //         .
-    //       </Highlight>
-    //     </Text>
-    //     <Text
-    //       fontSize={"xl"}
-    //       letterSpacing={"wider"}
-    //       color={"gray.600"}
-    //       marginBottom={"1rem"}
-    //     >
-    //       Already a member?{" "}
-    //       <Highlight
-    //         query={"Log in"}
-    //         styles={{
-    //           color: "blue",
-    //         }}
-    //       >
-    //         Log in
-    //       </Highlight>
-    //     </Text>
-    //     <form onSubmit={handleSubmit(onSubmit)}>
-    //       <Box display={"flex"} flexDir={"column"}>
-    //         <FormControl isInvalid={errors["First Name"]}>
-    //           <FormLabel htmlFor="fname">First name</FormLabel>
-    //           <CustomInput
-    //             id="'First Name'"
-    //             placeholder="First Name"
-    //             width={"25%"}
-    //             {...register("'First Name'")}
-    //           />
-    //           <FormErrorMessage color={"red"}>
-    //             {errors["First Name"] && errors["First Name"]?.message}
-    //           </FormErrorMessage>
-    //         </FormControl>
-    //         <FormControl isInvalid={errors?.["Last Name"]}>
-    //           <FormLabel htmlFor="Last Name">Last name</FormLabel>
-    //           <CustomInput
-    //             id="Last Name"
-    //             placeholder="Last Name"
-    //             {...register("Last Name")}
-    //             width="25%"
-    //           />
-    //           <FormErrorMessage color={"red"}>
-    //             {errors["Last Name"] && errors["Last Name"]?.message}
-    //           </FormErrorMessage>
-    //         </FormControl>
-    //         <FormControl isInvalid={errors?.email}>
-    //           <FormLabel htmlFor="email">Email</FormLabel>
-    //           <CustomInput
-    //             id="email"
-    //             placeholder="Email"
-    //             width="50%"
-    //             {...register("email")}
-    //           />
-    //           <FormErrorMessage color={"red"}>
-    //             {errors?.email && errors?.email.message}
-    //           </FormErrorMessage>
-    //         </FormControl>
-    //         <FormControl isInvalid={errors?.password}>
-    //           <FormLabel htmlFor="password">Password</FormLabel>
-    //           <CustomInput
-    //             id="password"
-    //             placeholder="Password"
-    //             width="50%"
-    //             {...register("password")}
-    //           />
-    //           <FormErrorMessage color={"red"}>
-    //             {errors?.password && errors?.password.message}
-    //           </FormErrorMessage>
-    //         </FormControl>
-    //         <FormControl isInvalid={errors?.confirmPassword}>
-    //           <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
-    //           <CustomInput
-    //             id="confirmPassword"
-    //             placeholder="Confirm Password"
-    //             width="50%"
-    //             {...register("confirmPassword")}
-    //           />
-    //           <FormErrorMessage color={"red"}>
-    //             {errors?.confirmPassword && errors?.confirmPassword.message}
-    //           </FormErrorMessage>
-    //         </FormControl>
-    //         <Button
-    //           mt={"1.5rem"}
-    //           colorScheme="teal"
-    //           isLoading={isSubmitting}
-    //           type="submit"
-    //           bgColor={"white"}
-    //           borderRadius={"10px"}
-    //           h={"2rem"}
-    //           w={"50%"}
-    //         >
-    //           Submit
-    //         </Button>
-    //       </Box>
-    //       <Box bg="red" w={[300, 400, 500]}>
-    //         This is a box
-    //       </Box>
-    //     </form>
-    //   </Box>
-    //   {/* <Box bg="black" h={"100vh"} w={[]}></Box> */}
-    // </Box>
-    <Box p={4} display={{ md: "flex" }}>
-      <Box flexShrink={0}>
-        <Image
-          borderRadius="lg"
-          width={{ md: 40 }}
-          src="https://bit.ly/2jYM25F"
-          alt="Woman paying for a purchase"
-        />
-      </Box>
-      <Box mt={{ base: 4, md: 0 }} ml={{ md: 6 }}>
+    <Box display={"flex"} bg="black" h={"100vh"} w={"100%"}>
+      <Box
+        bg="black"
+        h={"100vh"}
+        display={"flex"}
+        flexDir={"column"}
+        width={"60%"}
+        paddingLeft={"10rem"}
+      >
+        <Text fontSize={"xl"} color={"gray.500"} marginTop={"12rem"}>
+          START FOR FREE
+        </Text>
+        <Text fontSize={"4em"} fontWeight={"bold"} color={"white"}>
+          Create new account
+          <Highlight
+            query={"."}
+            styles={{
+              color: "blue",
+            }}
+          >
+            .
+          </Highlight>
+        </Text>
         <Text
-          fontWeight="bold"
-          textTransform="uppercase"
-          fontSize="sm"
-          letterSpacing="wide"
-          color="teal.600"
+          fontSize={"xl"}
+          letterSpacing={"wider"}
+          color={"gray.600"}
+          marginBottom={"1rem"}
         >
-          Marketing
+          Already a member?{" "}
+          <Highlight
+            query={"Log in"}
+            styles={{
+              color: "blue",
+            }}
+          >
+            Log in
+          </Highlight>
         </Text>
-        <Link
-          mt={1}
-          display="block"
-          fontSize="lg"
-          lineHeight="normal"
-          fontWeight="semibold"
-          href="#"
-        >
-          Finding customers for your new business
-        </Link>
-        <Text mt={2} color="gray.500">
-          Getting a new business off the ground is a lot of hard work. Here are
-          five ideas you can use to find your first customers.
-        </Text>
+        <Box display={"flex"} flexDir={"column"}>
+          <SimpleGrid column={1} spacing={2}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <GridItem colSpan={1}>
+                <FormControl isInvalid={errors["Name"]}>
+                  <FormLabel htmlFor="Name">Name</FormLabel>
+                  <Input
+                    className="custom_input"
+                    id="'Name'"
+                    placeholder="Name"
+                    {...register("Name")}
+                  />
+                  <FormErrorMessage color={"red"}>
+                    {errors["Name"] && errors["Name"]?.message}
+                  </FormErrorMessage>
+                </FormControl>
+              </GridItem>
+              <GridItem colSpan={1}>
+                <FormControl isInvalid={errors?.Email}>
+                  <FormLabel htmlFor="email">Email</FormLabel>
+                  <Input
+                    className="custom_input"
+                    id="email"
+                    type="email"
+                    placeholder="Email"
+                    {...register("Email")}
+                  />
+                  <FormErrorMessage color={"red"}>
+                    {errors?.Email && errors?.Email.message}
+                  </FormErrorMessage>
+                </FormControl>
+              </GridItem>
+              <GridItem colSpan={1}>
+                <FormControl isInvalid={errors?.Password}>
+                  <FormLabel htmlFor="Password">Password</FormLabel>
+                  <Input
+                    className="custom_input"
+                    id="Password"
+                    placeholder="Password"
+                    {...register("Password")}
+                  />
+                  <FormErrorMessage color={"red"}>
+                    {errors?.Password && errors?.Password.message}
+                  </FormErrorMessage>
+                </FormControl>
+              </GridItem>
+              <GridItem colSpan={1}>
+                <FormControl isInvalid={errors?.ConfirmPassword}>
+                  <FormLabel htmlFor="ConfirmPassword">
+                    Confirm Password
+                  </FormLabel>
+                  <Input
+                    className="custom_input"
+                    id="ConfirmPassword"
+                    placeholder="Confirm Password"
+                    {...register("ConfirmPassword")}
+                  />
+                  <FormErrorMessage color={"red"}>
+                    {errors?.ConfirmPassword && errors?.ConfirmPassword.message}
+                  </FormErrorMessage>
+                </FormControl>
+              </GridItem>
+              <GridItem colSpan={1}>
+                <Button
+                  mt={"1.5rem"}
+                  colorScheme="teal"
+                  isLoading={isSubmitting}
+                  type="submit"
+                  borderRadius={"10px"}
+                  loadingText="Signing up..."
+                  _loading={{
+                    color: "white",
+                    bgColor: "black",
+                  }}
+                  h={"2rem"}
+                  width={"50%"}
+                  variant={"outline"}
+                >
+                  Submit
+                </Button>
+              </GridItem>
+            </form>
+          </SimpleGrid>
+        </Box>
       </Box>
     </Box>
   );
