@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import {
   FormErrorMessage,
   FormLabel,
@@ -47,34 +48,34 @@ const SignUp = () => {
   });
 
   const toast = useToast();
+  const navigate = useNavigate();
+
   async function onSubmit(values) {
-    const res = await axios.post("/api/signup", values);
-    if (res.status == 200) {
-      toast({
-        title: "Account created.",
-        description: "We've created your account for you.",
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-      localStorage.setItem("user", JSON.stringify(res.data));
+    try {
+      const res = await axios.post("/api/signup", values);
+      if (res.status == 201) {
+        toast({
+          title: "Account created.",
+          description: "We've created your account for you.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        localStorage.setItem("user", JSON.stringify(res.data));
+        navigate("/chats");
+      }
+    } catch (error) {
+      if (error?.response?.status === 409) {
+        toast({
+          title: "User already exists.",
+          description:
+            "Email that you are using is associated with an account already.",
+          status: "warning",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
     }
-    if (res.status == 409) {
-      toast({
-        title: "User already exists.",
-        description:
-          "Email that you are using is associate with an account already.",
-        status: "warning",
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     alert(JSON.stringify(values, null, 2));
-    //     resolve();
-    //   }, 3000);
-    // });
   }
   return (
     <Box display={"flex"} bg="black" h={"100vh"} w={"100%"}>
@@ -83,10 +84,10 @@ const SignUp = () => {
         h={"100vh"}
         display={"flex"}
         flexDir={"column"}
-        width={"60%"}
-        paddingLeft={"10rem"}
+        width={["80%", "80%", "80%", "45%"]}
+        paddingLeft={["10vw", "10vw", "10vw", "10vw"]}
       >
-        <Text fontSize={"xl"} color={"gray.500"} marginTop={"12rem"}>
+        <Text fontSize={"xl"} color={"gray.500"} marginTop={"15vh"}>
           START FOR FREE
         </Text>
         <Text fontSize={"4em"} fontWeight={"bold"} color={"white"}>
@@ -103,18 +104,20 @@ const SignUp = () => {
         <Text
           fontSize={"xl"}
           letterSpacing={"wider"}
-          color={"gray.600"}
+          color={"gray.500"}
           marginBottom={"1rem"}
         >
           Already a member?{" "}
-          <Highlight
-            query={"Log in"}
-            styles={{
-              color: "blue",
-            }}
-          >
-            Log in
-          </Highlight>
+          <Link as={ReactRouterLink} to={"/login"}>
+            <Highlight
+              query={"Log in"}
+              styles={{
+                color: "blue",
+              }}
+            >
+              Log in
+            </Highlight>
+          </Link>
         </Text>
         <Box display={"flex"} flexDir={"column"}>
           <SimpleGrid column={1} spacing={2}>
@@ -132,12 +135,7 @@ const SignUp = () => {
                       *
                     </Highlight>
                   </FormLabel>
-                  <Input
-                    className="custom_input"
-                    id="'Name'"
-                    placeholder="Name"
-                    {...register("Name")}
-                  />
+                  <Input id="'Name'" placeholder="Name" {...register("Name")} />
                   <FormErrorMessage color={"red"}>
                     {errors["Name"] && errors["Name"]?.message}
                   </FormErrorMessage>
@@ -157,7 +155,6 @@ const SignUp = () => {
                     </Highlight>
                   </FormLabel>
                   <Input
-                    className="custom_input"
                     id="email"
                     type="email"
                     placeholder="Email"
@@ -182,7 +179,6 @@ const SignUp = () => {
                     </Highlight>
                   </FormLabel>
                   <Input
-                    className="custom_input"
                     id="Password"
                     type="password"
                     placeholder="Password"
@@ -207,7 +203,6 @@ const SignUp = () => {
                     </Highlight>
                   </FormLabel>
                   <Input
-                    className="custom_input"
                     id="ConfirmPassword"
                     type="password"
                     placeholder="Confirm Password"
@@ -222,17 +217,14 @@ const SignUp = () => {
               <GridItem colSpan={1}>
                 <Button
                   mt={"1.5rem"}
-                  colorScheme="teal"
+                  colorScheme="blue"
                   isLoading={isSubmitting}
                   type="submit"
-                  borderRadius={"10px"}
                   loadingText="Signing up..."
                   _loading={{
-                    color: "white",
                     bgColor: "black",
                   }}
-                  h={"2rem"}
-                  width={"50%"}
+                  width={"100%"}
                   variant={"outline"}
                 >
                   Submit

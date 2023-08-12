@@ -1,25 +1,37 @@
 const asyncHandler = require("express-async-handler");
 const UserModel = require("../models/userModel");
+const {
+  signToken,
+  verifyToken,
+  hashPassword,
+  checkPassword,
+} = require("../services");
 const signup = asyncHandler(async function (req, res, next) {
   console.log(req.body);
-  const user = req.body;
-  const isExist = await UserModel.exists({ email: user.Email });
-  console.log("🚀 ~ file: userController.js:7 ~ signup ~ isExist:", isExist);
+  const { Name, Email, Password } = req.body;
+  const isExist = await UserModel.exists({ email: Email });
   if (isExist) {
-    res.status(409).send({ ErrorMessage: "User already exists" });
+    res.status(409).send({ errorMessage: "User already exists" });
     return;
   }
+
+  const hashedPassword = await hashPassword(Password);
+  const token = signToken({ name: Name, email: Email });
+
   const newUser = new UserModel({
-    name: user.Name,
-    email: user.Email,
-    password: user.Password,
-    accessToken: "a",
-    refreshToken: "a",
+    name: Name,
+    email: Email,
+    password: hashedPassword,
+    accessToken: token,
+    refreshToken: token,
   });
-  console.log("🚀 ~ file: userController.js:13 ~ signup ~ newUser:", newUser);
-  newUser.save();
-  res.send(newUser);
-  //   next();
+  await newUser.save();
+  res.status(201).send({
+    name: Name,
+    email: Email,
+    accessToken: token,
+    refreshToken: token,
+  });
 });
 
 const login = asyncHandler(async function (req, res) {

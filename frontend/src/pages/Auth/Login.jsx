@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { io } from "socket.io-client";
+import { Link as ReactRouterLink } from "react-router-dom";
 // useEffect(() => {
 //   const socket = io("http://localhost:3000/");
 //   console.log("🚀 ~ file: Login.jsx:4 ~ socket:", socket);
@@ -60,10 +61,10 @@ const Login = () => {
         h={"100vh"}
         display={"flex"}
         flexDir={"column"}
-        width={"60%"}
-        paddingLeft={"10rem"}
+        width={["80%", "80%", "80%", "45%"]}
+        paddingLeft={["10vw", "10vw", "10vw", "10vw"]}
       >
-        <Text fontSize={"xl"} color={"gray.500"} marginTop={"12rem"}>
+        <Text fontSize={"xl"} color={"gray.500"} marginTop={"20vh"}>
           Hi, Happy to see you today !
         </Text>
         <Text fontSize={"4em"} fontWeight={"bold"} color={"white"}>
@@ -80,18 +81,20 @@ const Login = () => {
         <Text
           fontSize={"xl"}
           letterSpacing={"wider"}
-          color={"gray.600"}
+          color={"gray.500"}
           marginBottom={"1rem"}
         >
           Not a member?{" "}
-          <Highlight
-            query={"Sign up"}
-            styles={{
-              color: "blue",
-            }}
-          >
-            Sign up
-          </Highlight>
+          <Link as={ReactRouterLink} to={"/signup"}>
+            <Highlight
+              query={"Sign up"}
+              styles={{
+                color: "blue",
+              }}
+            >
+              Sign up
+            </Highlight>
+          </Link>
         </Text>
         <Box display={"flex"} flexDir={"column"}>
           <SimpleGrid column={1} spacing={2}>
@@ -109,9 +112,7 @@ const Login = () => {
                       *
                     </Highlight>
                   </FormLabel>
-
                   <Input
-                    className="custom_input"
                     id="email"
                     type="email"
                     placeholder="Email"
@@ -136,10 +137,9 @@ const Login = () => {
                     </Highlight>
                   </FormLabel>
                   <Input
-                    className="custom_input"
                     id="Password"
-                    placeholder="Password"
                     type="password"
+                    placeholder="Password"
                     {...register("Password")}
                   />
                   <FormErrorMessage color={"red"}>
@@ -150,17 +150,15 @@ const Login = () => {
               <GridItem colSpan={1}>
                 <Button
                   mt={"1.5rem"}
-                  colorScheme="teal"
+                  colorScheme="blue"
                   isLoading={isSubmitting}
                   type="submit"
-                  borderRadius={"10px"}
-                  loadingText="Login in..."
+                  loadingText="Signing up..."
                   _loading={{
                     color: "white",
                     bgColor: "black",
                   }}
-                  h={"2rem"}
-                  width={"50%"}
+                  width={"100%"}
                   variant={"outline"}
                 >
                   Submit
