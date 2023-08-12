@@ -14,7 +14,9 @@ import {
   Link,
   Input,
   GridItem,
+  useToast,
 } from "@chakra-ui/react";
+import axios from "axios";
 
 const schema = yup
   .object()
@@ -35,22 +37,44 @@ const SignUp = () => {
     register,
   } = useForm({
     defaultValues: {
-      Name: "",
-      Email: "",
-      Password: "",
-      ConfirmPassword: "",
+      Name: "Naveen",
+      Email: "naveenkumar892014@gmail.com",
+      Password: "Shadow@123",
+      ConfirmPassword: "Shadow@123",
     },
     resolver: yupResolver(schema),
     reValidateMode: "onChange",
   });
 
-  function onSubmit(values) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        alert(JSON.stringify(values, null, 2));
-        resolve();
-      }, 3000);
-    });
+  const toast = useToast();
+  async function onSubmit(values) {
+    const res = await axios.post("/api/signup", values);
+    if (res.status == 200) {
+      toast({
+        title: "Account created.",
+        description: "We've created your account for you.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      localStorage.setItem("user", JSON.stringify(res.data));
+    }
+    if (res.status == 409) {
+      toast({
+        title: "User already exists.",
+        description:
+          "Email that you are using is associate with an account already.",
+        status: "warning",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     alert(JSON.stringify(values, null, 2));
+    //     resolve();
+    //   }, 3000);
+    // });
   }
   return (
     <Box display={"flex"} bg="black" h={"100vh"} w={"100%"}>
