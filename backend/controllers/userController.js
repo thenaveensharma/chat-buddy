@@ -35,7 +35,28 @@ const signup = asyncHandler(async function (req, res, next) {
 });
 
 const login = asyncHandler(async function (req, res) {
-  console.log(req.body);
-  res.send(req.body);
+  const { Email: email, Password: password } = req.body;
+  const isExists = await UserModel.exists({ email });
+  console.log(isExists);
+  if (!isExists) {
+    res.status(404).send({ errorMessage: "Email does not exists" });
+    return;
+  }
+  const user = await UserModel.findOne({ email });
+  const isPasswordValid = await checkPassword(password, user.password);
+  if (!isPasswordValid) {
+    return res.status(401).send({ errorMessage: "Invalid email/password" });
+  }
+  const token = signToken({ name: user.name, email });
+  user.refreshToken = token;
+  user.accessToken = token;
+  await user.save();
+
+  res.status(200).send({
+    name: user.name,
+    email,
+    accessToken: token,
+    refreshToken: token,
+  });
 });
 module.exports = { signup, login };

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -70,7 +69,7 @@ const SignUp = () => {
           title: "User already exists.",
           description:
             "Email that you are using is associated with an account already.",
-          status: "warning",
+          status: "error",
           duration: 9000,
           isClosable: true,
         });

@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { io } from "socket.io-client";
-import { Link as ReactRouterLink } from "react-router-dom";
+// import { useEffect } from "react";
+// import { io } from "socket.io-client";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 // useEffect(() => {
 //   const socket = io("http://localhost:3000/");
 //   console.log("🚀 ~ file: Login.jsx:4 ~ socket:", socket);
@@ -8,6 +8,7 @@ import { Link as ReactRouterLink } from "react-router-dom";
 //     console.log("🚀 ~ file: Login.jsx:9 ~ socket.on ~ socket:", socket);
 //   });
 // }, []);
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -21,9 +22,9 @@ import {
   Highlight,
   SimpleGrid,
   Link,
-  Image,
   Input,
   GridItem,
+  useToast,
 } from "@chakra-ui/react";
 
 const schema = yup
@@ -34,6 +35,9 @@ const schema = yup
   })
   .required();
 const Login = () => {
+  const toast = useToast();
+  const navigate = useNavigate();
+
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -46,13 +50,40 @@ const Login = () => {
     resolver: yupResolver(schema),
     reValidateMode: "onChange",
   });
-  function onSubmit(values) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        alert(JSON.stringify(values, null, 2));
-        resolve();
-      }, 3000);
-    });
+  async function onSubmit(values) {
+    try {
+      const res = await axios.post("/api/login", values);
+      if (res.status == 200) {
+        toast({
+          title: "Logged in successfully.",
+          description: "Happy to see you again.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        localStorage.setItem("user", JSON.stringify(res.data));
+        navigate("/chats");
+      }
+    } catch (error) {
+      if (error?.response?.status === 404) {
+        toast({
+          title: "Email does not exists.",
+          description:
+            "Email that you are using is not registered, please register it first.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      } else if (error?.response?.status === 401) {
+        toast({
+          title: "Invalid email/password.",
+          description: "",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    }
   }
   return (
     <Box display={"flex"} bg="black" h={"100vh"} w={"100%"}>
