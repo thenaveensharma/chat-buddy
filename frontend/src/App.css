@@ -3,3 +3,7 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+.hide_scrollbar::-webkit-scrollbar {
+  display: none;
+}

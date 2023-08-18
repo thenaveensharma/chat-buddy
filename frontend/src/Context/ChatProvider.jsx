@@ -1,20 +1,17 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {} from "react-router-dom";
 
 const ChatContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 const ChatProvider = ({ children }) => {
-  const navigate = useNavigate();
+  //   const navigate = useNavigation();
 
   const [user, setUser] = useState();
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     setUser(userData);
-    if (!userData) {
-      navigate("/login");
-    }
-  }, [navigate]);
+  }, []);
   return (
     <ChatContext.Provider value={{ user, setUser }}>
       {children}

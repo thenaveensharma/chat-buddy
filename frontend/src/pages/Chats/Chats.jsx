@@ -1,9 +1,26 @@
-import React from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, HStack } from "@chakra-ui/react";
+import SideBar from "../../components/SideBar";
+import { ChatState } from "../../Context/ChatProvider";
+import MyChats from "./MyChats";
+import ChatBox from "./ChatBox";
 const Chats = () => {
+  const { user } = ChatState();
   return (
-    <Box minHeight={"100vh"} w={"100%"} bg={"black"} size={""}>
-      Chats
+    <Box bg={"black"} display={"flex"}>
+      {user && <SideBar />}
+      <Box
+        padding={"4"}
+        w={"full"}
+        margin={"1%"}
+        bg={"gray.700"}
+        marginY={"0"}
+        borderLeftRadius={"xl"}
+      >
+        <HStack>
+          {user && <MyChats />}
+          {user && <ChatBox />}
+        </HStack>
+      </Box>
     </Box>
   );
 };
