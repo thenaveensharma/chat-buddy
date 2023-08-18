@@ -44,15 +44,15 @@ const Login = () => {
     register,
   } = useForm({
     defaultValues: {
-      Email: "",
-      Password: "",
+      Email: "naveen@gmail.com",
+      Password: "Shadow@1212",
     },
     resolver: yupResolver(schema),
     reValidateMode: "onChange",
   });
   async function onSubmit(values) {
     try {
-      const res = await axios.post("/api/login", values);
+      const res = await axios.post("/api/user/login", values);
       if (res.status == 200) {
         toast({
           title: "Logged in successfully.",

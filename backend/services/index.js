@@ -9,7 +9,7 @@ const signToken = (user) => {
   });
 };
 const verifyToken = (token) => {
-  return jwt.verify(token, process.env.PRIVATE_KEY);
+  return jwt.verify(token, process.env.SECRET_KEY);
 };
 
 const hashPassword = async (password) => {

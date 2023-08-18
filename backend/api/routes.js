@@ -2,9 +2,10 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-// const authentication = require("../../middleware/authentication.js");
+const auth = require("../../backend/middleware/authentication.js");
 // Controllers
-const user = require("../controllers/userController.js");
+const user = require("../controllers/userControllers.js");
+const chat = require("../controllers/chatControllers.js");
 
 // create application/json parser
 const jsonParser = bodyParser.json({
@@ -14,7 +15,10 @@ const jsonParser = bodyParser.json({
 });
 
 // Registration , Login API
-router.post("/signup", [jsonParser], user.signup);
-router.post("/login", [jsonParser], user.login);
+router.post("/user/signup", [jsonParser], user.signup);
+router.post("/user/login", [jsonParser], user.login);
+router.get("/user", [jsonParser, auth], user.allUsers);
+router.post("/chat", [jsonParser, auth], chat.accessChat);
+router.get("/chat", [jsonParser, auth], chat.fetchChat);
 
 module.exports = router;

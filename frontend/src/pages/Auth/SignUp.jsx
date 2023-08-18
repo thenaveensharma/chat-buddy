@@ -51,7 +51,7 @@ const SignUp = () => {
 
   async function onSubmit(values) {
     try {
-      const res = await axios.post("/api/signup", values);
+      const res = await axios.post("/api/user/signup", values);
       if (res.status == 201) {
         toast({
           title: "Account created.",

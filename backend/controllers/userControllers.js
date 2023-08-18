@@ -1,11 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const UserModel = require("../models/userModel");
-const {
-  signToken,
-  verifyToken,
-  hashPassword,
-  checkPassword,
-} = require("../services");
+const { signToken, hashPassword, checkPassword } = require("../services");
 const signup = asyncHandler(async function (req, res, next) {
   console.log(req.body);
   const { Name, Email, Password } = req.body;
@@ -16,17 +11,16 @@ const signup = asyncHandler(async function (req, res, next) {
   }
 
   const hashedPassword = await hashPassword(Password);
-  const token = signToken({ name: Name, email: Email });
 
   const newUser = new UserModel({
     name: Name,
     email: Email,
     password: hashedPassword,
-    accessToken: token,
-    refreshToken: token,
   });
-  await newUser.save();
+  const token = signToken({ name: Name, email: Email, _id: newUser._id });
+  await newUser.save({ accessToken: token, refreshToken: token });
   res.status(201).send({
+    _id: newUser._id,
     name: Name,
     email: Email,
     accessToken: token,
@@ -47,16 +41,33 @@ const login = asyncHandler(async function (req, res) {
   if (!isPasswordValid) {
     return res.status(401).send({ errorMessage: "Invalid email/password" });
   }
-  const token = signToken({ name: user.name, email });
+  const token = signToken({ name: user.name, email, _id: user._id });
   user.refreshToken = token;
   user.accessToken = token;
   await user.save();
 
   res.status(200).send({
+    _id: user._id,
     name: user.name,
     email,
     accessToken: token,
     refreshToken: token,
   });
 });
-module.exports = { signup, login };
+const allUsers = asyncHandler(async function (req, res) {
+  const user = req.user;
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  const users = await UserModel.find(keyword)
+    .find({ _id: { $ne: user._id } })
+    .select(["_id", "email", "name"]);
+  res.status(200).json(users);
+});
+module.exports = { signup, login, allUsers };
