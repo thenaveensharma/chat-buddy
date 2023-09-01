@@ -58,7 +58,7 @@ const fetchChat = asyncHandler(async function (req, res, next) {
         );
         result = await UserModel.populate(result, {
           path: "latestMessage.sender",
-          select: "name emai;",
+          select: "name email",
         });
         res.status(200).send(result);
       });

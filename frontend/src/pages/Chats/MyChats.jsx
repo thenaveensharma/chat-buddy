@@ -32,12 +32,12 @@ const MyChats = () => {
       >
         <VStack marginTop={"3"}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map(
-            (value) => {
+            (value, index) => {
               return (
                 <>
                   <Box
                     height={"80px"}
-                    key={value}
+                    key={index}
                     width={"100%"}
                     padding={"2"}
                     bg={"gray.800"}
