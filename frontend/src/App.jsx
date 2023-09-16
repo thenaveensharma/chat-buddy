@@ -1,21 +1,13 @@
-import { useState } from "react";
+import { useContext } from "react";
 import "./App.css";
-import { Button } from "@chakra-ui/react";
+import ChatContext from "./Context/ChatProvider";
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const data = useContext(ChatContext);
+  console.log("🚀 ~ file: App.jsx:7 ~ App ~ data:", data);
   return (
     <>
-      <div className="card">
-        count is {count}
-        <Button
-          onClick={() => setCount((count) => count + 1)}
-          colorScheme="blue"
-        >
-          Button
-        </Button>
-      </div>
+      <div className="App"></div>
     </>
   );
 }

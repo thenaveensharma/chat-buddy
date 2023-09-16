@@ -5,7 +5,7 @@ import Chats from "../pages/Chats/Chats.jsx";
 const routes = createBrowserRouter([
   {
     path: "/",
-    element: <SignUp />,
+    element: <Login />,
   },
   {
     path: "/signup",

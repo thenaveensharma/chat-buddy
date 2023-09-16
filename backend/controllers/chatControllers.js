@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const ChatModel = require("../models/chatModel");
 const UserModel = require("../models/userModel");
-const { signToken, hashPassword, checkPassword } = require("../services");
 const messageModel = require("../models/messageModel");
 const accessChat = asyncHandler(async function (req, res, next) {
   const { userId } = req.body;
@@ -52,10 +51,6 @@ const fetchChat = asyncHandler(async function (req, res, next) {
       .populate("latestMessage")
       .sort({ updatedAt: -1 })
       .then(async (result) => {
-        console.log(
-          "🚀 ~ file: chatControllers.js:55 ~ .then ~ result:",
-          result,
-        );
         result = await UserModel.populate(result, {
           path: "latestMessage.sender",
           select: "name email",

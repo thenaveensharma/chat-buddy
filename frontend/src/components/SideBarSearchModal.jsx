@@ -19,21 +19,35 @@ import {
   VStack,
   SkeletonCircle,
   SkeletonText,
+  useToast,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import axios from "axios";
+import { ChatState } from "../Context/ChatProvider";
 const SideBarSearchModal = (props) => {
+  const { user, setSelectedChat } = ChatState();
   // eslint-disable-next-line react/prop-types
   const { isOpen, onClose } = props;
-  const user = JSON.parse(localStorage.getItem("user"));
+  const toast = useToast();
+
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
 
   const searchUsers = async () => {
     try {
+      if (!searchValue) {
+        toast({
+          title: "Search value is required",
+          description: "Please enter a name or email address",
+          status: "warning",
+          duration: 9000,
+          isClosable: true,
+        });
+        return;
+      }
       setLoading(true);
       const config = {
         headers: {
@@ -47,6 +61,26 @@ const SideBarSearchModal = (props) => {
     } catch (error) {
       console.log(error);
       setLoading(false);
+    }
+  };
+  const fetchChat = async (userId) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user?.accessToken}`,
+        },
+      };
+      const { data } = await axios.post(`/api/chat`, { userId }, config);
+      setSelectedChat(data);
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Error fetching the chat",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
   return (
@@ -84,7 +118,7 @@ const SideBarSearchModal = (props) => {
           >
             {loading ? (
               <VStack marginTop={"3"}>
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((value) => {
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((value, index) => {
                   return (
                     <>
                       <Box
@@ -95,7 +129,7 @@ const SideBarSearchModal = (props) => {
                         padding={"2"}
                         bg={"gray.800"}
                         borderRadius={"xl"}
-                        key={value}
+                        key={value + index}
                       >
                         <SkeletonCircle size="10" />
                         <SkeletonText
@@ -116,12 +150,17 @@ const SideBarSearchModal = (props) => {
                   return (
                     <>
                       <Box
+                        cursor={"pointer"}
+                        _hover={{
+                          bgColor: "gray.900",
+                        }}
                         height={"80px"}
                         key={_id}
                         width={"100%"}
                         padding={"2"}
                         bg={"gray.800"}
                         borderRadius={"xl"}
+                        onClick={() => fetchChat(_id)}
                       >
                         <HStack alignItems={"center"}>
                           <Avatar

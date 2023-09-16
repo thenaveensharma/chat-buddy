@@ -47,6 +47,7 @@ app.use(cors());
 const dotenv = require("dotenv");
 dotenv.config();
 const chats = require("./data/data");
+const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 app.get("/", (req, res) => {
   console.log("I'm Active");
@@ -74,6 +75,10 @@ app.use((err, req, res, next) => {
   console.error(err); // Log the error
   res.status(500).json({ error: "An error occurred" });
 });
+
+// Error Handling middlewares
+app.use(notFound);
+app.use(errorHandler);
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log("app is listening on port " + PORT);

@@ -43,11 +43,11 @@ const SideBar = () => {
           <Heading color={"gray.400"} size={"3xl"} marginBottom={"2"}>
             CB
           </Heading>
-          <Icon as={BsSearch} w={8} h={8} onClick={onOpen} />
-          <Icon as={BsChatRight} w={8} h={8} />
-          <Icon as={BsPeople} w={8} h={8} />
-          <Icon as={BsTelephone} w={8} h={8} />
-          <Icon as={BsCameraVideo} w={8} h={8} />
+          <Icon as={BsSearch} w={8} h={8} onClick={onOpen} cursor={"pointer"} />
+          <Icon as={BsChatRight} w={8} h={8} cursor={"pointer"} />
+          <Icon as={BsPeople} w={8} h={8} cursor={"pointer"} />
+          <Icon as={BsTelephone} w={8} h={8} cursor={"pointer"} />
+          <Icon as={BsCameraVideo} w={8} h={8} cursor={"pointer"} />
         </VStack>
         <VStack marginBottom={"6"}>
           <Menu>
