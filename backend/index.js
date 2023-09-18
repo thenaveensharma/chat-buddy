@@ -54,21 +54,31 @@ app.get("/", (req, res) => {
   res.send("I'm Active");
 });
 app.use("/api", routes);
-// io.on("connection", (socket) => {
-//   console.log("a user connected" + socket.id);
-// });
 
-// app.get("/api/chat", (req, res) => {
-//   res.send(chats);
-// });
-// app.get("user/signup", (req, res) => {
-//   res.send(chats);
-// });
-// app.get("/api/chat/:id", (req, res) => {
-//   const { id } = req.params;
-//   const singleChat = chats.find((chat) => chat._id === id);
-//   res.send(singleChat);
-// });
+//socket code
+io.on("connection", (socket) => {
+  // for the setup
+  socket.on("setup", (user) => {
+    socket.join(user._id);
+  });
+  // to join room
+  socket.on("join room", (room) => {
+    socket.join(room);
+    console.log("User joined this room:--", room);
+  });
+
+  // to send new message
+  socket.on("send message", (message) => {
+    console.log("🚀 ~ file: index.js:79 ~ socket.on ~ message:", message);
+    if (!message?.chat?.users)
+      return console.log("Chat does not have any user");
+
+    message?.chat.users.forEach((user) => {
+      if (user._id === message.sender._id) return;
+      socket.in(user._id).emit("message recieved", message);
+    });
+  });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

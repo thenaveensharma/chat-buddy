@@ -11,6 +11,10 @@ export const ChatProvider = ({ children }) => {
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("user"));
+    console.log(
+      "🚀 ~ file: ChatProvider.jsx:14 ~ useEffect ~ userInfo:",
+      userInfo,
+    );
     setUser(userInfo);
   }, []);
 

@@ -3,12 +3,6 @@ const ChatModel = require("../models/chatModel");
 const UserModel = require("../models/userModel");
 const MessageModel = require("../models/messageModel");
 const sendMessage = asyncHandler(async function (req, res, next) {
-  // {
-  //     sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  //     content: { type: String, trim: true },
-  //     chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
-  //     readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  //   }
   try {
     const { content, chatId } = req.body;
     if (!content || !chatId) {
@@ -23,14 +17,16 @@ const sendMessage = asyncHandler(async function (req, res, next) {
       chat: chatId,
     };
 
-    let message = new MessageModel.create(newMessage)
-      .populate("sender", "name email")
-      .populate("chat");
-    message = UserModel.populate(message, {
+    let message = await MessageModel.create(newMessage);
+
+    message = await message.populate("sender", "name email");
+    message = await message.populate("chat");
+    message = await UserModel.populate(message, {
       path: "chat.users",
       select: "name email",
     });
 
+    await ChatModel.findByIdAndUpdate(chatId, { latestMessage: message });
     res.json(message);
   } catch (error) {
     res.status(400);

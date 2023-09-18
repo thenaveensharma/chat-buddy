@@ -226,7 +226,7 @@ const SignUp = () => {
                   width={"100%"}
                   variant={"outline"}
                 >
-                  Submit
+                  Sign Up
                 </Button>
               </GridItem>
             </form>

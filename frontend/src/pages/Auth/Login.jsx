@@ -192,7 +192,7 @@ const Login = () => {
                   width={"100%"}
                   variant={"outline"}
                 >
-                  Submit
+                  Log In
                 </Button>
               </GridItem>
             </form>

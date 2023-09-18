@@ -19,9 +19,11 @@ const jsonParser = bodyParser.json({
 router.post("/user/signup", [jsonParser], user.signup);
 router.post("/user/login", [jsonParser], user.login);
 router.get("/user", [jsonParser, auth], user.allUsers);
+
 router.post("/chat", [jsonParser, auth], chat.accessChat);
 router.get("/chat", [jsonParser, auth], chat.fetchChat);
+
 router.post("/message", [jsonParser, auth], message.sendMessage);
-router.get("/message:chatId", [jsonParser, auth], message.allMessages);
+router.get("/message/:chatId", [jsonParser, auth], message.allMessages);
 
 module.exports = router;
