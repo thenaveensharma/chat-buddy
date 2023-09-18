@@ -15,10 +15,11 @@ import { BsSearch } from "react-icons/bs";
 import { ChatState } from "../../Context/ChatProvider";
 import axios from "axios";
 import { memo, useCallback, useEffect } from "react";
+import { getSender } from "../../Config";
 
 const MyChats = memo(function MyChats() {
   const {
-    // selectedChat,
+    selectedChat,
     setSelectedChat,
     user,
     // setUser,
@@ -71,22 +72,25 @@ const MyChats = memo(function MyChats() {
       >
         <VStack marginTop={"3"}>
           {chats &&
-            chats.map((value, index) => {
-              let { chatName, isGroupChat, users, latestMessage } = value;
-              const otherUser = users.find((u) => u._id != user._id);
-              chatName = isGroupChat ? chatName : otherUser.name;
+            chats.map((chat, index) => {
+              let { chatName, isGroupChat, users, latestMessage } = chat;
+
+              chatName = isGroupChat ? chatName : getSender(user, users).name;
+
               return (
                 <Box
                   height={"80px"}
-                  key={index + value}
+                  key={index}
                   width={"100%"}
                   padding={"2"}
-                  bg={"gray.800"}
                   borderRadius={"xl"}
-                  onClick={() => setSelectedChat(value)}
+                  onClick={() => setSelectedChat(chat)}
                   _hover={{
                     bgColor: "gray.900",
                   }}
+                  bgColor={
+                    selectedChat?._id == chat?._id ? "gray.600" : "gray.800"
+                  }
                   cursor={"pointer"}
                 >
                   <HStack alignItems={"center"}>

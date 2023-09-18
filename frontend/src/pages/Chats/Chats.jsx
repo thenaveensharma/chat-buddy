@@ -1,4 +1,4 @@
-import { Box, HStack } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import SideBar from "../../components/SideBar";
 import { ChatState } from "../../Context/ChatProvider";
 import MyChats from "./MyChats";
@@ -26,10 +26,10 @@ const Chats = () => {
           marginY={"0"}
           borderLeftRadius={"xl"}
         >
-          <HStack>
+          <Box display={"flex"}>
             {user && <MyChats />}
             {user && <ChatBox />}
-          </HStack>
+          </Box>
         </Box>
       </Box>
     )
