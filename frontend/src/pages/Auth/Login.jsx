@@ -184,7 +184,7 @@ const Login = () => {
                   colorScheme="blue"
                   isLoading={isSubmitting}
                   type="submit"
-                  loadingText="Signing up..."
+                  loadingText="Loging in..."
                   _loading={{
                     color: "white",
                     bgColor: "black",

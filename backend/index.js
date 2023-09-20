@@ -7,9 +7,11 @@ dbConnection();
 //routes defined here
 const routes = require("./api/routes.js");
 const http = require("http");
-const server = http.createServer(app);
+// const server = http.createServer(app);
 const { Server } = require("socket.io");
+const path = require("path");
 const allowedOrigins = ["*"];
+const PORT = process.env.PORT || 8080;
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -37,29 +39,64 @@ app.use(
   }),
 );
 
-const io = new Server(server, {
-  cors: {
-    origin: ["http://127.0.0.1:5173"],
-    methods: ["GET", "POST"],
-  },
-});
 app.use(cors());
 const dotenv = require("dotenv");
 dotenv.config();
-const chats = require("./data/data");
+// const chats = require("./data/data");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
-app.get("/", (req, res) => {
-  console.log("I'm Active");
-  res.send("I'm Active");
-});
+// app.get("/", (req, res) => {
+//   console.log("I'm Active");
+//   res.send("I'm Active");
+// });
 app.use("/api", routes);
 
-//socket code
+// --------------------------deployment------------------------------
+
+const __dirname1 = path.resolve();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname1, "/frontend/dist")));
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname1, "frontend", "dist", "index.html")),
+  );
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is running..");
+  });
+}
+
+// --------------------------deployment------------------------------
+
+// -------------------------------------Error handling middleware----------------------------------------------------
+app.use((err, req, res, next) => {
+  console.error(err); // Log the error
+  res.status(500).json({ error: "An error occurred" });
+});
+
+// Error Handling middlewares
+app.use(notFound);
+app.use(errorHandler);
+const server = app.listen(PORT, () => {
+  console.log("app is listening on port " + PORT);
+});
+//----------------------------------------socket code---------------------------------------------
+const io = new Server(server, {
+  cors: {
+    origin: [
+      "http://127.0.0.1:5173",
+      "http://localhost:5173",
+      "http://127.0.0.1:8080",
+      "http://localhost:8080",
+    ],
+    methods: ["GET", "POST"],
+  },
+});
 io.on("connection", (socket) => {
   // for the setup
   socket.on("setup", (user) => {
-    console.log(" User connected");
+    console.log("User connected");
     socket.join(user._id);
     socket.emit("connected");
   });
@@ -102,21 +139,4 @@ io.on("connection", (socket) => {
     socket.leave(user._id);
     console.log("User disconnected");
   });
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err); // Log the error
-  res.status(500).json({ error: "An error occurred" });
-});
-
-// Error Handling middlewares
-app.use(notFound);
-app.use(errorHandler);
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log("app is listening on port " + PORT);
-});
-server.listen(3000, () => {
-  console.log("socket is listening on port " + 3000);
 });

@@ -1,13 +1,20 @@
 {
-  "name": "backend",
+  "name": "chat-buddy",
   "version": "1.0.0",
   "description": "this is backend for chat buddy",
   "main": "index.js",
   "author": "Naveen Kumar",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon backend/index.js",
+    "server": "node backend/index.js",
+    "build": "npm install --legacy-peer-deps && npm install --legacy-peer-deps --prefix frontend && npm run build --prefix frontend"
   },
+  "keywords": [
+    "mern",
+    "chat-app",
+    "chat-buddy"
+  ],
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",

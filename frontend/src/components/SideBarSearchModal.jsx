@@ -27,7 +27,7 @@ import { BsSearch } from "react-icons/bs";
 import axios from "axios";
 import { ChatState } from "../Context/ChatProvider";
 const SideBarSearchModal = (props) => {
-  const { user, setSelectedChat } = ChatState();
+  const { user, setSelectedChat, setFetchAgain } = ChatState();
   // eslint-disable-next-line react/prop-types
   const { isOpen, onClose } = props;
   const toast = useToast();
@@ -72,6 +72,7 @@ const SideBarSearchModal = (props) => {
       };
       const { data } = await axios.post(`/api/chat`, { userId }, config);
       setSelectedChat(data);
+      setFetchAgain((prev) => !prev);
       onClose();
     } catch (error) {
       toast({
@@ -163,10 +164,7 @@ const SideBarSearchModal = (props) => {
                         onClick={() => fetchChat(_id)}
                       >
                         <HStack alignItems={"center"}>
-                          <Avatar
-                            //   name={value + "The Naveen"}
-                            size={"lg"}
-                          />
+                          <Avatar name={name} size={"lg"} />
                           <VStack alignItems={"start"}>
                             <Text>{name}</Text>
                             <Text color={"gray.500"}>{email}</Text>

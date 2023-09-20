@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   FormControl,
   Box,
@@ -15,7 +16,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { getSender } from "../../Config";
 import SingleChat from "../../components/SingleChat";
 
-const MyChats = memo(function MyChats() {
+const MyChats = memo(function MyChats({ fetchAgain }) {
   const { selectedChat, user, chats, setChats } = ChatState();
   const toast = useToast();
   const [filteredChats, setFilteredChats] = useState([]);
@@ -42,7 +43,7 @@ const MyChats = memo(function MyChats() {
 
   useEffect(() => {
     fetchChat();
-  }, [fetchChat]);
+  }, [fetchChat, fetchAgain]);
 
   function handleSearch(e) {
     let value = e.target.value;

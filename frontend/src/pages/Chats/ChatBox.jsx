@@ -1,9 +1,12 @@
+/* eslint-disable react/prop-types */
 import {
+  Avatar,
   Box,
   FormControl,
   IconButton,
   Input,
   Text,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { io } from "socket.io-client";
@@ -14,10 +17,21 @@ import { getSender } from "../../Config";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import ScrollableMessages from "../../components/ScrollableMessages";
+import ProfileModal from "../../components/ProfileModal";
+import Notification from "../../assets/Notification.mp3";
 var socket, selectedChatCompare;
-const ChatBox = () => {
+const ChatBox = ({ setFetchAgain }) => {
   const toast = useToast();
-  const { user, selectedChat, setSelectedChat } = ChatState();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const notify = new Audio(Notification);
+
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    notifications,
+    setNotifications,
+  } = ChatState();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newMessage, setNewMessage] = useState("");
@@ -91,7 +105,7 @@ const ChatBox = () => {
   }, [fetchMessages]);
 
   useEffect(() => {
-    socket = io("http://localhost:3000/");
+    socket = io("http://localhost:8080/");
     socket.emit("setup", user);
     socket.on("connected", () => {
       console.log("Socket is connected");
@@ -132,7 +146,12 @@ const ChatBox = () => {
     socket.on("message recieved", (message) => {
       if (!selectedChatCompare || selectedChatCompare !== message.chat._id) {
         //send notification
-        console.log("send notification");
+        if (!notifications.includes(message)) {
+          console.log("setting notifications");
+          setNotifications([message, ...notifications]);
+          setFetchAgain((prev) => !prev);
+          notify.play();
+        }
       } else {
         setMessages([...messages, message]);
       }
@@ -176,7 +195,10 @@ const ChatBox = () => {
         <IconButton
           display={["flex", "flex", "flex", "none"]}
           icon={<ArrowBackIcon />}
-          onClick={() => setSelectedChat("")}
+          onClick={() => {
+            setSelectedChat("");
+            selectedChatCompare = -1;
+          }}
           bgColor={"gray.600"}
         />
         <span>
@@ -184,6 +206,16 @@ const ChatBox = () => {
             ? selectedChat?.chatName?.toUpperCase()
             : getSender(user, selectedChat?.users)?.name?.toUpperCase()}
         </span>
+        <Avatar
+          name={
+            selectedChat.isGroupChat
+              ? selectedChat.chatName
+              : getSender(user, selectedChat?.users)?.name
+          }
+          onClick={onOpen}
+          cursor={"pointer"}
+          size={"md"}
+        />
       </Text>
       <ScrollableMessages messages={messages} loading={loading} />
       <FormControl
@@ -201,6 +233,22 @@ const ChatBox = () => {
           onChange={typingHandler}
         />
       </FormControl>
+      <ProfileModal
+        isOpen={isOpen}
+        onClose={onClose}
+        users={
+          selectedChat
+            ? selectedChat?.users?.filter(
+                (userInUsers) => userInUsers._id !== user._id,
+              )
+            : []
+        }
+        chatName={
+          selectedChat.isGroupChat
+            ? selectedChat.chatName
+            : getSender(user, selectedChat?.users)?.name
+        }
+      />
     </Box>
   ) : (
     <Box
