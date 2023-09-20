@@ -105,7 +105,7 @@ const ChatBox = ({ setFetchAgain }) => {
   }, [fetchMessages]);
 
   useEffect(() => {
-    socket = io("http://localhost:8080/");
+    socket = io("https://chat-buddy-fo2j.onrender.com/"); // production url
     socket.emit("setup", user);
     socket.on("connected", () => {
       console.log("Socket is connected");
