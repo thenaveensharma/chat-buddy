@@ -38,6 +38,8 @@ const SideBar = () => {
         flexDir={"column"}
         alignItems={"center"}
         justifyContent={"space-between"}
+        paddingTop={"3"}
+        paddingLeft={"3"}
       >
         <VStack gap={"10"}>
           <Heading color={"gray.400"} size={"3xl"} marginBottom={"2"}>

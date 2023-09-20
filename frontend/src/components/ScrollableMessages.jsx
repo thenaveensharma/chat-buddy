@@ -1,11 +1,19 @@
-import { Box, Skeleton, Spinner } from "@chakra-ui/react";
+/* eslint-disable react/prop-types */
+import { Box, Spinner } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
+import { useEffect } from "react";
 const ScrollableMessages = ({ loading, messages }) => {
   const { user } = ChatState();
-  console.log(
-    "🚀 ~ file: ScrollableMessages.jsx:3 ~ ScrollableMessages ~ messages:",
-    messages,
-  );
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const element = document.getElementById(
+        messages[messages.length - 1]._id,
+      );
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   return !loading ? (
     <Box
       width="100%"
@@ -24,7 +32,9 @@ const ScrollableMessages = ({ loading, messages }) => {
           justifyContent={
             user?._id === message.sender?._id ? "flex-end" : "flex-start"
           }
+          marginTop={"1"}
           key={message._id}
+          id={`${message._id}`}
         >
           <Box
             display={"flex"}

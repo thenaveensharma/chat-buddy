@@ -6,30 +6,20 @@ import {
   InputGroup,
   Icon,
   VStack,
-  HStack,
-  Avatar,
-  Text,
   useToast,
 } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
 import { ChatState } from "../../Context/ChatProvider";
 import axios from "axios";
-import { memo, useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { getSender } from "../../Config";
+import SingleChat from "../../components/SingleChat";
 
 const MyChats = memo(function MyChats() {
-  const {
-    selectedChat,
-    setSelectedChat,
-    user,
-    // setUser,
-    // notification,
-    // setNotification,
-    chats,
-    setChats,
-  } = ChatState();
+  const { selectedChat, user, chats, setChats } = ChatState();
   const toast = useToast();
-
+  const [filteredChats, setFilteredChats] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
   const fetchChat = useCallback(async () => {
     try {
       const config = {
@@ -53,15 +43,42 @@ const MyChats = memo(function MyChats() {
   useEffect(() => {
     fetchChat();
   }, [fetchChat]);
+
+  function handleSearch(e) {
+    let value = e.target.value;
+    setSearchValue(value);
+    const filtered = chats.filter((chat) => {
+      return chat.isGroupChat
+        ? chat.name.toLowerCase().includes(value)
+        : getSender(user, chat.users).name.toLowerCase().includes(value);
+    });
+    setFilteredChats(filtered);
+  }
   return chats ? (
-    <Box w={"30%"} height={"95vh"} borderRight={"1px"} borderColor={"black"}>
+    <Box
+      width={["100%", "100%", "100%", "40%"]}
+      height={"95vh"}
+      borderRight={"1px"}
+      borderColor={"black"}
+      display={[
+        selectedChat ? "none" : "block",
+        selectedChat ? "none" : "block",
+        selectedChat ? "none" : "block",
+        "block",
+      ]}
+    >
       <FormControl>
         <InputGroup>
           <InputLeftAddon bg={"none"}>
             <Icon as={BsSearch} width={4} height={4} />
           </InputLeftAddon>
 
-          <Input id="search" type="text" placeholder="Search" />
+          <Input
+            id="search"
+            type="text"
+            placeholder="Search"
+            onChange={handleSearch}
+          />
         </InputGroup>
       </FormControl>
       <Box
@@ -71,42 +88,7 @@ const MyChats = memo(function MyChats() {
         className="hide_scrollbar"
       >
         <VStack marginTop={"3"}>
-          {chats &&
-            chats.map((chat, index) => {
-              let { chatName, isGroupChat, users, latestMessage } = chat;
-
-              chatName = isGroupChat ? chatName : getSender(user, users).name;
-
-              return (
-                <Box
-                  height={"80px"}
-                  key={index}
-                  width={"100%"}
-                  padding={"2"}
-                  borderRadius={"xl"}
-                  onClick={() => setSelectedChat(chat)}
-                  _hover={{
-                    bgColor: "gray.900",
-                  }}
-                  bgColor={
-                    selectedChat?._id == chat?._id ? "gray.600" : "gray.800"
-                  }
-                  cursor={"pointer"}
-                >
-                  <HStack alignItems={"center"}>
-                    <Avatar name={chatName} size={"lg"} />
-                    <VStack alignItems={"start"}>
-                      <Text>{chatName}</Text>
-                      <Text color={"gray.500"}>
-                        {latestMessage
-                          ? latestMessage.content
-                          : "Click to send message..."}
-                      </Text>
-                    </VStack>
-                  </HStack>
-                </Box>
-              );
-            })}
+          <SingleChat chats={searchValue ? filteredChats : chats} />
         </VStack>
       </Box>
     </Box>

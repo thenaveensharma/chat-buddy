@@ -59,17 +59,19 @@ app.use("/api", routes);
 io.on("connection", (socket) => {
   // for the setup
   socket.on("setup", (user) => {
+    console.log(" User connected");
     socket.join(user._id);
+    socket.emit("connected");
   });
   // to join room
   socket.on("join room", (room) => {
     socket.join(room);
+
     console.log("User joined this room:--", room);
   });
 
   // to send new message
   socket.on("send message", (message) => {
-    console.log("🚀 ~ file: index.js:79 ~ socket.on ~ message:", message);
     if (!message?.chat?.users)
       return console.log("Chat does not have any user");
 
@@ -77,6 +79,28 @@ io.on("connection", (socket) => {
       if (user._id === message.sender._id) return;
       socket.in(user._id).emit("message recieved", message);
     });
+  });
+
+  //typing indicator
+  socket.on("start typing", ({ chat, user }) => {
+    if (!chat?.users) return console.log("Chat does not have any user");
+
+    chat.users.forEach((userInUsers) => {
+      if (userInUsers._id === user._id) return;
+      socket.in(userInUsers._id).emit("recieve typing", { chat, user });
+    });
+  });
+  socket.on("send stop typing", ({ chat }) => {
+    if (!chat?.users) return console.log("Chat does not have any user");
+
+    chat.users.forEach((userInUsers) => {
+      socket.in(userInUsers._id).emit("recieve stop typing", { chat });
+    });
+  });
+
+  socket.off("setup", (user) => {
+    socket.leave(user._id);
+    console.log("User disconnected");
   });
 });
 
