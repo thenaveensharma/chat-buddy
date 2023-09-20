@@ -44,8 +44,8 @@ const Login = () => {
     register,
   } = useForm({
     defaultValues: {
-      Email: "naveenkumar892014@gmail.com",
-      Password: "Shadow@123",
+      Email: "demo@chatbuddy.com",
+      Password: "Demo@123",
     },
     resolver: yupResolver(schema),
     reValidateMode: "onChange",

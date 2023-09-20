@@ -37,10 +37,10 @@ const SignUp = () => {
     register,
   } = useForm({
     defaultValues: {
-      Name: "Naveen",
-      Email: "naveenkumar892014@gmail.com",
-      Password: "Shadow@123",
-      ConfirmPassword: "Shadow@123",
+      Name: "",
+      Email: "",
+      Password: "",
+      ConfirmPassword: "",
     },
     resolver: yupResolver(schema),
     reValidateMode: "onChange",
