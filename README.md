@@ -1,5 +1,5 @@
 # Chat Buddy
-chat buddy is an application based on tech stack to chat with each other :- React.js, Node.js, Express.js and MongoDb
+chat buddy is an application to chat with each other based on tech stack :- React.js, Node.js, Express.js and MongoDb
 It is using websocket library socket.io under the hood.
 
 
