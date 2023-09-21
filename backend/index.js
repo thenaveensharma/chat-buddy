@@ -23,7 +23,10 @@ app.use((req, res, next) => {
   return next();
 });
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://127.0.0.1:5173"); // Replace with your React client URL
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://chat-buddy-fo2j.onrender.com/",
+  ); // Replace with your React client URL
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept",
