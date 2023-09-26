@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Box, Spinner } from "@chakra-ui/react";
+import { Avatar, Box, Spinner, Tooltip } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
 import { useEffect } from "react";
 const ScrollableMessages = ({ loading, messages }) => {
@@ -35,7 +35,17 @@ const ScrollableMessages = ({ loading, messages }) => {
           marginTop={"1"}
           key={message._id}
           id={`${message._id}`}
+          alignItems={"center"}
+          padding={3}
         >
+          <Tooltip label={message?.sender?.name}>
+            <Avatar
+              name={message?.sender?.name}
+              size={"sm"}
+              marginRight={"2"}
+              display={user?._id !== message.sender?._id ? "hidden" : "none"}
+            />
+          </Tooltip>
           <Box
             display={"flex"}
             textAlign={"left"}
@@ -44,7 +54,6 @@ const ScrollableMessages = ({ loading, messages }) => {
             backgroundColor={"gray.800"}
             borderRadius={"xl"}
             marginY={"1"}
-            marginX={"5"}
             padding={"3"}
             wordBreak={"break-word"}
           >

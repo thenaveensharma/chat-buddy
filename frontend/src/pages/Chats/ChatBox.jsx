@@ -236,6 +236,7 @@ const ChatBox = ({ setFetchAgain }) => {
       <ProfileModal
         isOpen={isOpen}
         onClose={onClose}
+        chat={selectedChat}
         users={
           selectedChat
             ? selectedChat?.users?.filter(

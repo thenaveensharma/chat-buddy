@@ -1,9 +1,7 @@
 import {
-  Avatar,
   Box,
   Button,
   FormControl,
-  HStack,
   Icon,
   Input,
   InputGroup,
@@ -15,10 +13,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
   VStack,
-  SkeletonCircle,
-  SkeletonText,
   useToast,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
@@ -26,6 +21,8 @@ import { useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import axios from "axios";
 import { ChatState } from "../Context/ChatProvider";
+import UserListItem from "./User/UserListItem";
+import LoadingUser from "./User/LoadingUser";
 const SideBarSearchModal = (props) => {
   const { user, setSelectedChat, setFetchAgain } = ChatState();
   // eslint-disable-next-line react/prop-types
@@ -118,60 +115,18 @@ const SideBarSearchModal = (props) => {
             className="hide_scrollbar"
           >
             {loading ? (
-              <VStack marginTop={"3"}>
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((value, index) => {
-                  return (
-                    <>
-                      <Box
-                        w={"full"}
-                        boxShadow="lg"
-                        height={"80px"}
-                        width={"100%"}
-                        padding={"2"}
-                        bg={"gray.800"}
-                        borderRadius={"xl"}
-                        key={value + index}
-                      >
-                        <SkeletonCircle size="10" />
-                        <SkeletonText
-                          mt="1"
-                          noOfLines={1}
-                          spacing="1"
-                          skeletonHeight="2"
-                        />
-                      </Box>
-                    </>
-                  );
-                })}
-              </VStack>
+              <LoadingUser length={10} />
             ) : (
               <VStack marginTop={"3"}>
                 {users.map((user) => {
                   const { _id, name, email } = user;
                   return (
-                    <>
-                      <Box
-                        cursor={"pointer"}
-                        _hover={{
-                          bgColor: "gray.900",
-                        }}
-                        height={"80px"}
-                        key={_id}
-                        width={"100%"}
-                        padding={"2"}
-                        bg={"gray.800"}
-                        borderRadius={"xl"}
-                        onClick={() => fetchChat(_id)}
-                      >
-                        <HStack alignItems={"center"}>
-                          <Avatar name={name} size={"lg"} />
-                          <VStack alignItems={"start"}>
-                            <Text>{name}</Text>
-                            <Text color={"gray.500"}>{email}</Text>
-                          </VStack>
-                        </HStack>
-                      </Box>
-                    </>
+                    <UserListItem
+                      key={_id}
+                      onClick={() => fetchChat(_id)}
+                      name={name}
+                      email={email}
+                    />
                   );
                 })}
               </VStack>

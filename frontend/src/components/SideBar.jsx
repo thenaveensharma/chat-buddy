@@ -15,14 +15,16 @@ import {
 import NotificationBadge, { Effect } from "react-notification-badge";
 import {
   // BsPeople,
-  BsChatRight,
+  // BsChatRight,
   // BsTelephone,
   // BsCameraVideo,
   BsSearch,
 } from "react-icons/bs";
+import { MdGroupAdd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import SideBarSearchModal from "./SideBarSearchModal";
 import ProfileModal from "./ProfileModal";
+import CreateGroup from "./CreateGroup";
 import { ChatState } from "../Context/ChatProvider";
 
 const SideBar = ({ setFetchAgain }) => {
@@ -98,7 +100,10 @@ const SideBar = ({ setFetchAgain }) => {
             </MenuList>
           </Menu>
           <Icon as={BsSearch} w={8} h={8} onClick={onOpen} cursor={"pointer"} />
-          <Icon as={BsChatRight} w={8} h={8} cursor={"pointer"} />
+          <CreateGroup>
+            <Icon as={MdGroupAdd} w={8} h={8} cursor={"pointer"} />
+          </CreateGroup>
+          {/* <Icon as={BsChatRight} w={8} h={8} cursor={"pointer"} /> */}
           {/* <Icon as={BsPeople} w={8} h={8} cursor={"pointer"} /> */}
           {/* <Icon as={BsTelephone} w={8} h={8} cursor={"pointer"} /> */}
           {/* <Icon as={BsCameraVideo} w={8} h={8} cursor={"pointer"} /> */}

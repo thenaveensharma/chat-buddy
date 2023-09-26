@@ -7,8 +7,6 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": "http://localhost:8080",
-      // "/api": "https://chat-buddy-fo2j.onrender.com", //production url
-      // Add more proxy configurations if needed
     },
   },
 });
