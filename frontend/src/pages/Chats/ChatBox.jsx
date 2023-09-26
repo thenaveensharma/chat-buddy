@@ -144,7 +144,9 @@ const ChatBox = ({ setFetchAgain }) => {
 
   useEffect(() => {
     socket.on("message recieved", (message) => {
-      if (!selectedChatCompare || selectedChatCompare !== message.chat._id) {
+      if (selectedChatCompare && selectedChatCompare === message.chat._id) {
+        setMessages([...messages, message]);
+      } else {
         //send notification
         if (!notifications.includes(message)) {
           console.log("setting notifications");
@@ -152,21 +154,19 @@ const ChatBox = ({ setFetchAgain }) => {
           setFetchAgain((prev) => !prev);
           notify.play();
         }
-      } else {
-        setMessages([...messages, message]);
       }
     });
   });
   useEffect(() => {
     socket.on("recieve typing", ({ chat, user }) => {
-      if (selectedChatCompare || selectedChatCompare === chat._id) {
+      if (selectedChatCompare && selectedChatCompare === chat._id) {
         setTyper(user);
       }
     });
   });
   useEffect(() => {
     socket.on("recieve stop typing", ({ chat }) => {
-      if (selectedChatCompare || selectedChatCompare === chat._id) {
+      if (selectedChatCompare && selectedChatCompare === chat._id) {
         setTyper(null);
       }
     });

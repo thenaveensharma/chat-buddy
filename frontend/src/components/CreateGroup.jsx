@@ -37,11 +37,10 @@ const schema = yup
     selectedusers: yup
       .array()
       .required()
-      .length(
+      .min(
         2,
         "Please select atleast 2 group participants (excluding yourself)",
       ),
-    // .min(2, "Please select atleast three group participants"),
   })
   .required();
 const CreateGroup = ({ children }) => {
@@ -57,6 +56,7 @@ const CreateGroup = ({ children }) => {
   const {
     setValue,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
     register,
   } = useForm({
@@ -72,10 +72,6 @@ const CreateGroup = ({ children }) => {
     try {
       const { groupName, selectedusers } = values;
       if (!groupName || !selectedusers) {
-        console.log(
-          "🚀 ~ file: CreateGroup.jsx:72 ~ onSubmit ~ values:",
-          values,
-        );
         toast({
           title: "Please fill all the fields",
           status: "warning",
@@ -108,6 +104,10 @@ const CreateGroup = ({ children }) => {
         isClosable: true,
         position: "bottom",
       });
+      reset();
+      searchUsers("");
+      setUsers([]);
+      setSelectedUsers([]);
     } catch (error) {
       toast({
         title: "Failed to Create the Chat!",
