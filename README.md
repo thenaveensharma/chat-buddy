@@ -10,3 +10,11 @@ if you have any doubt or any query , feel free to drop an email naveenkumar89201
 
 Deploment link :- https://chat-buddy-fo2j.onrender.com
 
+Screenshots of chat application:-
+
+![Signup](https://github.com/thenaveensharma/chat-buddy/assets/73418263/8ff4003b-6847-4773-9a0e-0e34b304ed33)
+
+
+
+![Login](https://github.com/thenaveensharma/chat-buddy/assets/73418263/59bb915a-9f6c-445d-a2e9-fed58dc3a096)
+![Chats](https://github.com/thenaveensharma/chat-buddy/assets/73418263/8ed30c73-e3ab-46b0-ae70-d88c3c18761b)
